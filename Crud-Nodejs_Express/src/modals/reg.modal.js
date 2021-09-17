@@ -1,6 +1,8 @@
 const dbConn = require('../../Config/db.config');
+const date = require('date-and-time')
 
 var Users = function(signup){
+    this.reg_id = signup.reg_id;
     this.reg_logo = signup.reg_logo;
     this.reg_username = signup.reg_username;
     this.reg_restname = signup.reg_restname;
@@ -38,13 +40,32 @@ Users.getUserById = (id, result)=>{
     });
 }
 
-Users.addUser = (userReqData, result)=>{
-    dbConn.query('INSERT INTO signup SET ?', userReqData, (err, res1)=>{
+Users.updateUser = (req, result)=>{
+    Users = req.body
+    const now  =  new Date(); 
+    const updatedDate = date.format(now,'YYYY-MM-DD HH:mm:ss'); 
+    // console.log(req.file.filename);
+    // var updatedDate = new Date();
+    dbConn.query("UPDATE signup SET reg_logo ='"+req.file.filename+"', reg_username ='"+Users.reg_username+"', reg_restname ='"+Users.reg_restname+"', reg_fname ='"+Users.reg_fname+"', reg_lname ='"+Users.reg_lname+"', reg_email ='"+Users.reg_email+"', reg_mobile ='"+Users.reg_mobile+"', reg_password ='"+Users.reg_password+"', updatedAt ='"+updatedDate+"', status ='"+Users.status+"' WHERE signup.accountId ='"+Users.reg_id+"'", (err, res1)=>{
         if(err){
             result(err, null)
+            console.log("failed "+ err);
         }else{
-            console.log("employe created success");
-            result(null, res1.accountId)
+            result(null, res1)
+            console.log("success "+res1);
+        }
+    });
+}
+
+Users.deleteUser = (req, result)=>{
+   Users = req.body
+    dbConn.query("DELETE from signup WHERE signup.accountId = '"+Users.reg_id+"'", (err, res1)=>{
+        if(err){
+            result(err, null);
+            console.log(err);
+        }else{
+            result(null, res1)
+            console.log(res1);
         }
     });
 }

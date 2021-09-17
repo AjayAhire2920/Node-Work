@@ -1,37 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer')
+const uploads = multer({
+    dest: 'images/'
+})
 const regController = require('../controllers/registration.Controller')
 
 
-const files = multer.diskStorage({
+const filesStored = multer.diskStorage({
     destination: (req, file, cb) => {
-        const isInvalid = Mime_Type[file.mimetype];
-        let error = Error("Invalid File Type");
-        if (isInvalid) {
-            error = null
+        const isValid = Mine_Type[file.mimetype];
+        let error = Error("Invalid mime type");
+        if (isValid) {
+            error = null;
         }
         cb(error, "images");
     },
-    filename: (req, file, cb)=>{
+    filename: (req, file, cb) => {
         const name = file.originalname;
-        cb(null, Date.now()+new Date().getMilliseconds()+ ".png");
+        cb(null, Date.now() + new Date().getMilliseconds() + ".png");
     }
 });
 
-const Mime_Type = {
-    "images/jpeg": 'jpeg',
-    "images/png": 'png',
+const Mine_Type = {
+    "image/jpeg": 'jpeg',
+    "image/png": 'png'
 }
-
 
 
 
 //getAllUser route
 router.get('/getAllUsers', regController.getAllUserList);
 router.get('/:id', regController.getUserById);
-router.post('/addUser', regController.addUser);
+// router.post('/addUser', uploads.single('reg_logo'), regController.addUser); //works fine
+router.route('/addUser').post(multer({storage: filesStored}).single("reg_logo"), regController.addUser);
+router.route('/updateUser').post(multer({storage:filesStored}).single("reg_logo"), regController.updateUser);
 
+
+router.delete('/deleteUser',regController.deleteUser)
+
+// app.route('/registration/signup').post(multer({storage: storage}).single("reg_logo"),regController.regUsers);
 
 
 
