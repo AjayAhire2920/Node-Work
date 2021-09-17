@@ -43,6 +43,7 @@ Users.addUser = (userReqData, result)=>{
         if(err){
             result(err, null)
         }else{
+            console.log("employe created success");
             result(null, res1.accountId)
         }
     });

@@ -38,29 +38,21 @@ exports.getUserById = (req, res)=>{
 
 
 exports.addUser = (req, res)=>{    
-    const userReqData = new userModal(req.body);
-    console.log("Add User "+ req.body);
+//   console.log("Body", req.body);
+  const userReqData = new Users(req.body);
 
-    // if(req.body.constructor === Object && Object(req.body).length === 0){
-    //     res.send(400).send({
-    //         success: false,
-    //         message: "Please Fill All the Fields."
-    //     });
-    // }else{
-        console.log("Success Valid Data");
-        userModal.addUser(userReqData, (err, res1)=>{
-            if(err){
-                res.json({
-                    data: null,
-                    status: "failed"
-                });
-            }else{
-                console.log(res1);
-                res.json({
-                    data: res1,
-                    status: "success"
-                });
-            }
+  userModal.addUser(userReqData, (err, res1)=>{
+    if(err){
+        res.json({
+            data: null,
+            status: false
         });
-    // }
+    }else{
+        res.json({
+            data: res1,
+            status: true
+        });
+    }
+  });
+
 }
